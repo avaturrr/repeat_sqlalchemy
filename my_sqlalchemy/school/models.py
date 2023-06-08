@@ -41,4 +41,16 @@ class Students(Base):
         self.group_id = gruop_id
 
 
+class Diary(Base):
+    __tablename__ = "diary"
+    id = Column(Integer, primary_key=True)
+    avg = Column(Integer)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
+    student = relationship("Students", foreign_keys="Diary.student_id", backref="diary", uselist=False)
+
+    def __init__(self, avg, student_id):
+        self.avg = avg
+        self.student_id = student_id
+
+
 Base.metadata.create_all(engine)
