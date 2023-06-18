@@ -2,7 +2,7 @@
 Создать базу school в postgre. Создать таблицу Учебной группы(Group)
 с помощью sqlalchemy в декларативном стиле. Группа характеризуется названием(name)."""
 
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import database_exists, create_database
@@ -52,5 +52,22 @@ class Diary(Base):
         self.avg = avg
         self.student_id = student_id
 
+
+association_table = Table("association", Base.metadata,
+                          Column("id", Integer, primary_key=True),
+                          Column("student_id", Integer, ForeignKey("students.id")),
+                          Column("book_id", Integer, ForeignKey("book.id")))
+
+
+class Book(Base):
+    __tablename__ = "book"
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+    pages = Column(Integer)
+    student = relationship("Students", secondary=association_table, backref="books")
+
+    def __init__(self, title, pages):
+        self.title = title
+        self.pages = pages
 
 Base.metadata.create_all(engine)
