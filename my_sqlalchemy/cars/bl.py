@@ -56,9 +56,11 @@ def read_car():
 
 def delete_brand():
     brand = ui_delete_brand()
-    car_delete = session1.query(Car).filter_by(brand_id=brand)
+    car_delete = session1.query(Car).filter_by(brand_id=brand).first()
     print(car_delete)
     session1.delete(car_delete)
+    session1.commit()
+    session1.close()
     brand_delete = session1.query(Brand).get(brand)
     session1.delete(brand_delete)
     session1.commit()
